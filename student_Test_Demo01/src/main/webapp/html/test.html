@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="form-container sign-up-container" id="app1">
+        <form :model="user">
+            <h1>注册</h1>
+            <span style="display: none;color: red" id="checkCode_err">验证码错误！!</span>
+            <span style="display: none;color: red" id="username_err">用户名已存在!</span>
+            <span style="display: none;color: red" id="null_err">用户名或密码不能为空!</span>
+            <input type="text" placeholder="用户名" v-model="user.username" name="username"/>
+            <input type="password" placeholder="密码" v-model="user.password" name="password" />
+            <input type="text" placeholder="验证码"  v-model="user.CheckCode" name="checkCode"/>
+            <span><img id="checkCod" src="/student_Test_Demo01/checkCodServlet"></span>
+            <button v-on:click.prevent="login1">注册完成</button>
+        </form>
+    </div>
+    <div id="app2">
+        <div class="form-container sign-in-container" >
+            <form>
+                <h1>登录</h1>
+                <input type="text" placeholder="用户名" name="username"/>
+                <input type="password" placeholder="密码" name="password" />
+                <a href="#">忘记密码?</a>
+                <button v-on:click.prevent="login2">登录完成</button>
+            </form>
+        </div>
+    </div>
+<!--    <div class="overlay-container">-->
+<!--        <div class="overlay">-->
+<!--            <div class="overlay-panel overlay-left">-->
+<!--                <h1>欢迎回来！</h1>-->
+<!--                <p>请用您的个人信息登录</p>-->
+<!--                <button class="ghost" id="signIn">注册</button>-->
+<!--            </div>-->
+<!--            <div class="overlay-panel overlay-right">-->
+<!--                <h1>你好 朋友！</h1>-->
+<!--                <p>输入你的个人信息从注册一个账号开始旅程</p>-->
+<!--                <button class="ghost" id="signUp">登录</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+    <script src="../js/vue.js"></script>
+    <script src="../element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
+    <script>
+        new Vue({
+            el:"#app1",
+            methods:{
+                login1(){
+                    alert("登录正在施工中")
+                }
+            }
+        })
+        new Vue({
+            el:"#app2",
+            methods:{
+                login2(){
+                    alert("登录正在施工中")
+                }
+            }
+        })
+    </script>
+</body>
+</html>

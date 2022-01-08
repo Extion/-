@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/regtion.css">
+</head>
+<body>
+    <h2>登录页面</h2>
+        <div class="container" id="container">
+            <div class="form-container sign-up-container" id="app1">
+                <form :model="user">
+                    <h1>注册</h1>
+                    <span style="display: none;color: red" id="checkCode_err">验证码错误！!</span>
+                    <span style="display: none;color: red" id="username_err">用户名已存在!</span>
+                    <span style="display: none;color: red" id="null_err">用户名或密码不能为空!</span>
+                    <input type="text" placeholder="用户名" v-model="user.username" name="username"/>
+                    <input type="password" placeholder="密码" v-model="user.password" name="password" />
+                    <input type="text" placeholder="验证码"  v-model="user.CheckCode" name="checkCode"/>
+                    <span><img id="checkCod" src="/student_Test_Demo01/checkCodServlet"></span>
+                    <button v-on:click.prevent="submitfrom">注册完成</button>
+                </form>
+            </div>
+            <div class="form-container sign-in-container" id="app2">
+                <form :model="user">
+                    <h1>登录</h1>
+                    <span style="display: none;color: red" id="login_err">用户名或密码错误!</span>
+                    <input type="text" v-model="user.username" placeholder="用户名" name="username"/>
+                    <input type="password" v-model="user.password" placeholder="密码" name="password" />
+                    <a href="#">忘记密码?</a>
+                    <button v-on:click.prevent="login">登录完成</button>
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>欢迎回来！</h1>
+                        <p>请用您的个人信息登录</p>
+                        <button class="ghost" id="signIn">注册</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>你好 朋友！</h1>
+                        <p>输入你的个人信息从注册一个账号开始旅程</p>
+                        <button class="ghost" id="signUp">登录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="../js/js-cookie.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../element-ui/lib/index.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
+<script>
+    var signUpButton = document.getElementById('signUp');
+    var signInButton = document.getElementById('signIn');
+    var container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
+    new Vue({
+        el:"#app2",
+        data(){
+            return{
+                user:{
+                    username:"",
+                    password:"",
+                }
+            }
+        },
+        methods:{
+            login(){
+                if (this.user!=null){
+                    Cookies.remove("user");
+                    Cookies.set("user",this.user.username);
+                    console.log(Cookies.get("user"))
+                    axios({
+                        method: "post",
+                        url: "http://localhost:8080/student_Test_Demo01/userServlet",
+                        data:this.user
+                    }).then(resp => {
+                        if (resp.data=="failure"){
+                            //登录失败
+                            document.getElementById("login_err").style.display="";
+                        }else if (resp.data=="success"){
+                            location.href="http://localhost:8080/student_Test_Demo01/html/index.html"
+                        }
+                    })
+                }
+
+            }
+        }
+    })
+    new Vue({
+        el:"#app1",
+        mounted(){
+            //验证码刷新
+            document.getElementById("checkCod").onclick=function (){
+                document.getElementById("checkCod").src="/student_Test_Demo01/checkCodServlet?"+new Date().getMilliseconds();
+            };
+        },
+        data(){
+            return{
+                user:{
+                    username:"",
+                    password:"",
+                    CheckCode:"",
+                }
+
+            }
+        },
+        methods:{
+            //提交注册表单
+            submitfrom() {
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/student_Test_Demo01/regtionServlet",
+                    data:this.user
+                }).then(resp => {
+                    if (resp.data == "CAPTCHA error") {
+                        //验证码错误
+                        document.getElementById("checkCode_err").style.display = "";
+                    } else if (resp.data == "failure") {
+                        //存在
+                        document.getElementById("username_err").style.display = "";
+                    }else if (resp.data=="NULL"){
+                        //为空
+                        document.getElementById("null_err").style.display = "";
+                    }
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>
